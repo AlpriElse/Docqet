@@ -27,8 +27,20 @@ module.exports = function() {
     app.use(express.static(path.join(__dirname, 'public')));
 
     //  Router Hand-off
-    app.use('/', routes);
-    app.use('/users', users);
+    app.use(express.static('public'));
+
+    //app.use('/', routes);
+    //app.use('/users', users);
+    /*app.get('/javascripts/:script', function(req,res) {
+        console.log('called');
+        var script = req.param.script;
+        res.sendFile('/javascripts/'+script);
+    });
+    app.get('/data/:file', function(req,res) {
+        console.log(req.params.file);
+        var y = req.params.file;
+        res.sendFile('/data/'+y);
+    });*/
 
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
