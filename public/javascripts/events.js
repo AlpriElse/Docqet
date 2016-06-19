@@ -45,7 +45,7 @@ Events.fill = function(UI) {
             if(moment().isSame(eventDay,'day')) {
                 Event.nowListHandler({
                     event: currentValue,
-                    index: index
+                    index: index,
                 });
             } else if(moment().isBefore(eventDay)) {
                 Event.upcomingListHandler({
@@ -75,17 +75,66 @@ Events.fill = function(UI) {
 Event.nowListHandler = function(req) {
     Events.nowList.add({
         headline: req.event.name,
-        desc: req.event.desc
+        desc: req.event.desc,
+        meta: req.event
     });
 }
 Event.upcomingListHandler = function(req) {
     Events.upcomingList.add({
         headline: req.event.name + ' is ' + moment().to(moment(req.event.moment)),
-        desc: req.event.desc
+        desc: req.event.desc,
+        meta: req.event
     });
 }
 Events.prun = function () {
-    
+    //  Cycle Through Events nowList
+    Events.nowList.items.forEach(function(currentValue, index, array) {
+        var obj = currentValue._values.meta,
+            thisMoment = currentValue._values.meta.moment;
+        if(obj.isAllDay) {
+            if(moment().isAfter(moment(thisMoment,'YYYY-MM-DD'), 'day')) {
+                Events.nowList.remove('headline', obj.name);
+            }
+        } else {
+            if(moment().isAfter(moment(thisMoment.end,'YYYY-MM-DD HH:mm'),'minute')) {
+                Events.nowList.remove('headline', obj.name);
+            }
+        }
+    });
+
+    //  Cycle Through Events upcomingList
+    Events.upcomingList.items.forEach(function(currentValue, index, array) {
+        var obj = currentValue._values.meta,
+            thisMoment = currentValue._values.meta.moment;
+        if(obj.isAllDay) {
+            if(moment().isSame(moment(thisMoment,'YYYY-MM-DD'), 'day')) {
+                Events.upcomingList.remove('headline', obj.name);
+                Events.nowList.add({
+                    headline: obj.name,
+                    desc: obj.desc,
+                    meta: obj
+                });
+                return;
+            }
+        } else {
+            if(moment().isAfter(moment(thisMoment.start,'YYYY-MM-DD HH:mm'),'minute')) {
+                Events.upcomingList.remove('meta', obj);
+                Events.nowList.add({
+                    headline: obj.name,
+                    desc: obj.desc,
+                    meta: obj
+                });
+                return;
+            }
+        }
+
+        //  Update Countdown
+        var temp = obj.isAllDay ? [obj.moment,'YYYY-MM-DD'] : [obj.moment.start,'YYYY-MM-DD HH:mm'];
+        currentValue.values({
+            headline: obj.name + ' is ' + moment().to(moment(temp[0],temp[1]))
+        });
+
+    });
 }
 Events.update = function(UI) {
     //Events.nowList.add({name:'name',desc:'desc'});

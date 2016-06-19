@@ -12,8 +12,17 @@
             "desc": "Clubs will be presenting during all lunch periods.",
             "isAllDay": false,
             "moment": {
-                "start":"2016-06-18 10:14",
-                "end":"2016-06-18 15:15"
+                "start":"2016-06-18 22:24",
+                "end":"2016-06-18 23:14"
+            }
+        },
+        {
+            "name": "Activity Fair 2",
+            "desc": "Clubs will be presenting during all lunch periods.",
+            "isAllDay": false,
+            "moment": {
+                "start":"2016-06-18 22:09",
+                "end":"2016-06-18 23:14"
             }
         },
         {
@@ -26,7 +35,7 @@
             "name": "Spirit Wear",
             "desc": "put description here",
             "isAllDay": true,
-            "moment": "2016-06-19"
+            "moment": "2016-06-18"
         }
     ],
     "Schedules": {
