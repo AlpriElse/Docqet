@@ -10,7 +10,6 @@ module.exports = function() {
     //  Set Router File-paths
     var routes = require('./routes/index');
     var users = require('./routes/users');
-    var schoolRouter = require('./routes/schoolRouter');
 
     //  Initialize App
     var app = express();
@@ -35,16 +34,6 @@ module.exports = function() {
 
     app.use('/static', express.static('public'));
 
-    /*app.get('/javascripts/:script', function(req,res) {
-        console.log('called');
-        var script = req.param.script;
-        res.sendFile('/javascripts/'+script);
-    });
-    app.get('/data/:file', function(req,res) {
-        console.log(req.params.file);
-        var y = req.params.file;
-        res.sendFile('/data/'+y);
-    });*/
 
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
