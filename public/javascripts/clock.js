@@ -13,16 +13,15 @@ var Clock = function() {
 
 };
 
-Clock.init = function(UI) {
+Clock.init = function(UI, filepath) {
     var hr = new XMLHttpRequest();
-    hr.open("GET", "./data/calendar.json", true);
+    hr.open("GET", filepath, true);
     hr.setRequestHeader("Content-type", "apllication/json", true);
     hr.onreadystatechange = function ()
     {
     	if(hr.readyState == 4 && hr.status == 200)
     	{
     		calendar = JSON.parse(hr.responseText.toString());
-    		console.log("Calenar Parsed!");
     		Clock.callback(calendar, UI);
     	}
     }
@@ -33,7 +32,7 @@ Clock.callback = function(data, UI) {
     $(UI.date).html(moment().format('dddd MMMM Do[,] YYYY'));
 
     var res = Clock.checkCalendar(data);
-    $(UI.dayType).html(res.dayType)
+    $(UI.dayType).html(res.schedule)
 
     res = Clock.getSection(data, res);
     $(UI.section).html(res.section);
@@ -72,12 +71,3 @@ Clock.checkCalendar = function(data) {
         schedule: schedule
     }
 }
-
-
-Clock.init({
-    section:'#section',
-    time:'#time',
-    date:'#date',
-    dayType:'#dayType',
-    countdown:'#countdown'
-});

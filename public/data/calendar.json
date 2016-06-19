@@ -10,11 +10,23 @@
         {
             "name": "Activity Fair",
             "desc": "Clubs will be presenting during all lunch periods.",
+            "isAllDay": false,
+            "moment": {
+                "start":"2016-06-18 10:14",
+                "end":"2016-06-18 15:15"
+            }
+        },
+        {
+            "name": "Another Event",
+            "desc": "Another event description.",
             "isAllDay": true,
-            "dayType": "Regular Day",
-            "start":"2016-06-12 22:59",
-            "end":"2016-06-12 23:00",
-            "range":""
+            "moment": "2016-06-18"
+        },
+        {
+            "name": "Spirit Wear",
+            "desc": "put description here",
+            "isAllDay": true,
+            "moment": "2016-06-19"
         }
     ],
     "Schedules": {
