@@ -10,6 +10,7 @@ module.exports = function() {
     //  Set Router File-paths
     var routes = require('./routes/index');
     var users = require('./routes/users');
+    var schoolRouter = require('./routes/schoolRouter');
 
     //  Initialize App
     var app = express();
@@ -24,13 +25,16 @@ module.exports = function() {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(cookieParser());
-    app.use(express.static(path.join(__dirname, 'public')));
+    //app.use(express.static(path.join(__dirname, 'public')));
 
     //  Router Hand-off
-    app.use(express.static('public'));
+    //app.use(express.static('public'));
 
-    //app.use('/', routes);
-    //app.use('/users', users);
+    app.use('/', routes);
+    app.use('/users', users);
+
+    app.use('/static', express.static('public'));
+
     /*app.get('/javascripts/:script', function(req,res) {
         console.log('called');
         var script = req.param.script;

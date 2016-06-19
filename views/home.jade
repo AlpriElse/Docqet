@@ -1,0 +1,29 @@
+html
+  head
+    title #{title}
+  body
+    h3 Clock
+    p#section  
+    p#time  
+    p#date  
+    p#dayType  
+    p#countdown  
+    h3 Events Right Now
+    #nowList
+      ul.list
+    h3 Upcoming Events
+    #upcomingList
+      ul.list
+  footer
+    script(src='/static/javascripts/plugins/jquery.min.js')
+    script(src='/static/javascripts/plugins/moment.js')
+    script(src='/static/javascripts/plugins/moment-range.min.js')
+    script(src='/static/javascripts/plugins/moment-recur.min.js')
+    script(src='/static/javascripts/plugins/list.js')
+    script(src='/static/javascripts/clock.js')
+    script(src='/static/javascripts/events.js')
+    
+    script.
+        var calendarFilepath = '!{pageData.calendarFilepath}';
+        var _UI_IDs = !{JSON.stringify(pageData._UI_IDs)}
+    script(src='/static/javascripts/initializer.js')
