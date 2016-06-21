@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = function(db) {
     //  Load Modules
     var express = require('express');
     var path = require('path');
@@ -10,6 +10,7 @@ module.exports = function() {
     //  Set Router File-paths
     var routes = require('./routes/index');
     var users = require('./routes/users');
+    var regisration = require('./routes/regisration');
 
     //  Initialize App
     var app = express();
@@ -29,11 +30,11 @@ module.exports = function() {
     //  Router Hand-off
     //app.use(express.static('public'));
 
-    app.use('/', routes);
     app.use('/users', users);
-
+    app.use('/regisration/', regisration(db));
     app.use('/static', express.static('public'));
-
+    //app.use('/data', data);
+    app.use('/', routes(db));
 
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {
@@ -42,7 +43,7 @@ module.exports = function() {
       next(err);
     });
 
-    // error handlers
+    // ======= Error Handlers =======
 
     // development error handler
     // will print stacktrace
@@ -65,7 +66,6 @@ module.exports = function() {
         error: {}
       });
     });
-
 
     return app
 }
