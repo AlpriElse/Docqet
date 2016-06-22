@@ -1,7 +1,6 @@
-module.exports = function(db) {
+module.exports = function(db, passport) {
     var express = require('express');
-    var router = express.Router();
-    var schoolHandler = require('/school.js');
+    var router = express.Router(mergeParams=true);
 
     //  URL: /
     router.get('/', function(req, res, next) {
@@ -13,26 +12,54 @@ module.exports = function(db) {
         res.render('index', { title: 'About' });
     });
 
-    //  URL: /schoolName
-    router.get('/:school', function(req, res, next) {
-        var school = req.params.school;
-        res.render('home', {
-            title: school,
-            pageData: {
-                calendarFilepath: '/static/data/calendar.json',
-                _UI_IDs: {
-                    section:'#section',
-                    time:'#time',
-                    date:'#date',
-                    dayType:'#dayType',
-                    countdown:'#countdown',
-                    nowList: '#nowList',
-                    upcomingList: '#upcomingList'
-                }
-            }
-        });
+    //  GET Login Page
+    router.get('/login', function(req, res) {
+        res.render('login', {});
     });
 
+    //  Handle Login Post Request
+    router.post('/login', passport.authenticate('login', {
+        successRedirect:'/home',
+        failureRedirect:'/',
+        failureFlash: true
+    }));
+
+    //  GET Regisration page
+    router.get('/signup', passport.authenticate('signup', {
+        successRedirect: '/home',
+        failureRedirect: '/signup',
+        failureFlash: true
+    }))
+
+    //  URL: /schoolName
+    router.get('/:school', function(req,res,next) {
+        res.render('home', {
+            'title':req.params.school,
+            'pageData': {
+                'calendarFilepath':'/static/data/calendar.json',
+                '_UI_IDs': {
+                    'time':'#time',
+                    'date':'#date',
+                    'dayType':'#dayType',
+                    'section':'#section',
+                    'countdown':'#countdown'
+                }
+            }
+        })
+    });
 
     return router;
+}
+
+
+var _getSchools = function() {
+    var schoolSchema = require('../schemas/school.js');
+    schoolSchema.find(function(err, schools) {
+        if(err) {
+            console.log(err);
+            res.status(500).json({status: 'failure'});
+        } else {
+            return schools;
+        }
+    });
 }

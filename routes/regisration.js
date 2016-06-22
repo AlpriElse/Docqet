@@ -29,9 +29,8 @@ module.exports = function(db) {
         });
     });
 
-
     router.get('/', function(req,res, next) {
-        res.sendFile(path.join(__dirname+'/../public/regisration.html'));
+        res.render('regisration', {});
     });
 
 

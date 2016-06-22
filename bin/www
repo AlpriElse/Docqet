@@ -8,17 +8,17 @@ db.once('open', function() {
     console.log('Mongo Database Connected');
 });
 
+//  Passport
+var passport = require('passport');
+
 //  Module Dependences
-var app = require('../app')(db);
+var app = require('../app')(db, passport);
 var debug = require('debug')('Sundial:server');
 var http = require('http');
 
 //  Set Port ...previously process.env.PORT
 var port = normalizePort('3000');
 app.set('port', port);
-
-
-//app.locals.basedir = '/';
 
 //  Create HTTP Server
 var server = http.createServer(app);
@@ -47,11 +47,9 @@ function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
-
   var bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
-
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
