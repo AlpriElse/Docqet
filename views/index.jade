@@ -1,5 +1,14 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .container-fluid
+      h1= title
+      p Welcome to #{title}
+      ul.list-group
+        li.list-group-item 
+            a(href='/login') Login
+        li.list-group-item 
+            a(href='/signup') Sign Up
+        li.list-group-item 
+            a(href='/register') Register
+    

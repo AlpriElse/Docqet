@@ -6,10 +6,16 @@ module.exports = function(db, passport) {
     var LocalStrategy = require('passport-local').Strategy;
     var login = require('../passport/login.js')();
     var signup = require('../passport/signup.js')();
+    var register = require('../passport/register.js')();
 
     //  URL: /
     router.get('/', function(req, res, next) {
         res.render('index', { title: 'Express' });
+    });
+
+    router.get('/logout', function(req, res){
+        req.logout();
+        res.redirect('/');
     });
 
     //  URL: /about
@@ -31,13 +37,25 @@ module.exports = function(db, passport) {
         })
     });
 
-    //  GET Regisration page
+    //  GET Signup page
     router.get('/signup', function(req, res) {
-        res.render('signup',{})
+        res.render('signup',{});
     });
 
-    //  GET Regisration page
+    //  GET Signup page
     router.post('/signup', passport.authenticate('signup', {
+        successRedirect: '/home',
+        failureRedirect: '/',
+        failureFlash: true
+    }));
+
+    //  GET Regisration Page
+    router.get('/register', function(req, res) {
+        res.render('register');
+    });
+
+    //  POST Regisration Page
+    router.post('/register', passport.authenticate('register', {
         successRedirect: '/home',
         failureRedirect: '/',
         failureFlash: true
@@ -62,17 +80,4 @@ module.exports = function(db, passport) {
     });
 
     return router;
-}
-
-
-var _getSchools = function() {
-    var schoolSchema = require('../schemas/school.js');
-    schoolSchema.find(function(err, schools) {
-        if(err) {
-            console.log(err);
-            res.status(500).json({status: 'failure'});
-        } else {
-            return schools;
-        }
-    });
 }

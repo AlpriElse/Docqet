@@ -42,11 +42,9 @@ module.exports = function(db, passport) {
     //  Set Router File-paths
     var routes = require('./routes/index');
     var users = require('./routes/users');
-    var regisration = require('./routes/regisration');
 
     //  Pass to Routers
     app.use('/users', users);
-    app.use('/regisration/', regisration(db));
     app.use('/static', express.static('public'));
     app.use('/', routes(db, passport));
 

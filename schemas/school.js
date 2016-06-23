@@ -1,10 +1,11 @@
 var mongoose = require('mongoose');
 
 module.exports = mongoose.model('School',{
-    "School Name": {type: String, required: true},
-    "Admins": {type: Array, required: true},
-    "Calendar": {type: Array, default: []},
-    "Event List": {type: Array, default: []},
-    "Schedules": {type: Array, default: []},
-    "Change Log": {type: Array, default: []}
+    schoolName: {type: String, required: true},
+    adminEmail: {type: String, required: true},
+    adminPassword: {type: String, require: true},
+    calendar: {type: Array, default: []},
+    eventList: {type: Array, default: []},
+    schedules: {type: Array, default: []},
+    changeLog: {type: Array, default: []}
 });
