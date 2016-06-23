@@ -1,9 +1,6 @@
 extends layout
 
-html
-  head
-    title #{title}
-  body
+block content
     .container
         h1 #{title}
         .panel.panel-default
@@ -27,7 +24,8 @@ html
             .panel-body
                 #upcomingList
                   ul.list
-  footer
+                  
+block dependences
     script(src='/static/javascripts/plugins/jquery.min.js')
     script(src='/static/javascripts/plugins/moment.js')
     script(src='/static/javascripts/plugins/moment-range.min.js')

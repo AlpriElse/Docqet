@@ -6,25 +6,26 @@ module.exports = function(db, passport) {
     var logger = require('morgan');
     var cookieParser = require('cookie-parser');
     var bodyParser = require('body-parser');
+    var flash = require('connect-flash');
 
     //  Initialize App
     var app = express();
 
     //  Configuring Passport
-    var passport = require('passport');
+    var User = require('./schemas/user.js');
     var expressSession = require('express-session');
     app.use(expressSession({secret:'mySecretKey'}));
     app.use(passport.initialize());
     app.use(passport.session());
 
-    /*passport.serializeUser(function(user, done) {
+    passport.serializeUser(function(user, done) {
         done(null, user._id);
     });
     passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, done) {
+        User.findById(id, function(err, user) {
             done(err, user);
         });
-    });*/
+    });
 
     //  Set-Up View Engine
     app.set('views', path.join(__dirname, 'views'));
@@ -32,6 +33,7 @@ module.exports = function(db, passport) {
 
     //  App Configuring
     //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+    app.use(flash());
     app.use(logger('dev'));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));

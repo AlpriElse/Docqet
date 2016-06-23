@@ -1,6 +1,11 @@
 module.exports = function(db, passport) {
     var express = require('express');
     var router = express.Router(mergeParams=true);
+    var flash = require('connect-flash');
+
+    var LocalStrategy = require('passport-local').Strategy;
+    var login = require('../passport/login.js')();
+    var signup = require('../passport/signup.js')();
 
     //  URL: /
     router.get('/', function(req, res, next) {
@@ -18,21 +23,29 @@ module.exports = function(db, passport) {
     });
 
     //  Handle Login Post Request
-    router.post('/login', passport.authenticate('login', {
-        successRedirect:'/home',
-        failureRedirect:'/',
+    router.post('/login', function() {
+        passport.authenticate('login', {
+            successRedirect:'/home',
+            failureRedirect:'/',
+            failureFlash: true
+        })
+    });
+
+    //  GET Regisration page
+    router.get('/signup', function(req, res) {
+        res.render('signup',{})
+    });
+
+    //  GET Regisration page
+    router.post('/signup', passport.authenticate('signup', {
+        successRedirect: '/home',
+        failureRedirect: '/',
         failureFlash: true
     }));
 
-    //  GET Regisration page
-    router.get('/signup', passport.authenticate('signup', {
-        successRedirect: '/home',
-        failureRedirect: '/signup',
-        failureFlash: true
-    }))
-
     //  URL: /schoolName
     router.get('/:school', function(req,res,next) {
+        console.log(req.user);
         res.render('home', {
             'title':req.params.school,
             'pageData': {
