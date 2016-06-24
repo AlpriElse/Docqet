@@ -1,16 +1,16 @@
-module.exports = function () {
-    var passport = require('passport');
+module.exports = function (passport) {
     var LocalStrategy = require('passport-local').Strategy;
     var flash = require('connect-flash');
-    var User = require('../schemas/user.js');
 
     passport.use('signup', new LocalStrategy({
+        usernameField: 'email',
         passReqToCallback : true
     },
-    function(req, username, password, done) {
+    function(req, email, password, done) {
         findOrCreateUser = function(){
+            var User = require('../schemas/user.js');
             // find a user in Mongo with provided username
-            User.findOne({'username':username},function(err, user) {
+            User.findOne({'email':email},function(err, user) {
                 // In case of any error return
                 if (err){
                     console.log('Error in SignUp: '+err);
@@ -25,11 +25,10 @@ module.exports = function () {
                     // create the user
                     var newUser = new User();
                     // set the user's local credentials
-                    newUser.username = username;
+                    newUser.email = email;
                     newUser.password = createHash(password);
-                    newUser.email = req.body['email'];
-                    newUser.gender = req.body['gender'];
-                    newUser.address = req.body['address'];
+                    newUser.name = req.body['name'];
+                    newUser.betakey = req.body['beta key'];
 
                     // save the user
                     newUser.save(function(err) {

@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+    .card.col-md-6.col-md-offset-3
+        .card-block
+            h1.text-xs-center Create School 
+            br
+            form(action='/createSchool', method='POST')
+                .form-group
+                    input.form-control(type='text', name='schoolName', placeholder='school name')
+                .form-group
+                    input.form-control(type='text',id='link' name='schoolLink', placeholder='link')
+                    br
+                    p.text-muted() 
+                        h7 School Web Address: 
+                        br
+                        strong www.sundial.com/
+                        span(id='schoolAddress')
+                    small.text-muted() Tip: If your desired school link is taken, try putting in your district number.
+
+                
+                button.btn.btn-block.btn-primary(type='submit') Submit
+block footer
+    script.
+        $(document).ready( function() {
+            $('#link').keyup( function() {
+                $('#schoolAddress').html($('#link').val());
+            });
+        });
+        
+        

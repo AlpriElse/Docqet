@@ -12,15 +12,20 @@ module.exports = function(db, passport) {
     var app = express();
 
     //  Configuring Passport
-    var User = require('./schemas/user.js');
-    var expressSession = require('express-session');
-    app.use(expressSession({secret:'mySecretKey'}));
+    var session = require('express-session');
+    app.use(session({
+        secret:'mySecretKey',
+        resave: true,
+        saveUninitialized: true
+    }));
     app.use(passport.initialize());
     app.use(passport.session());
 
+    var User = require('./schemas/user.js');
     passport.serializeUser(function(user, done) {
-        done(null, user._id);
+        done(null, user.id);
     });
+
     passport.deserializeUser(function(id, done) {
         User.findById(id, function(err, user) {
             done(err, user);
@@ -32,7 +37,7 @@ module.exports = function(db, passport) {
     app.set('view engine', 'jade');
 
     //  App Configuring
-    //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+    // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
     app.use(flash());
     app.use(logger('dev'));
     app.use(bodyParser.json());

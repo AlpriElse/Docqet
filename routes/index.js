@@ -4,13 +4,10 @@ module.exports = function(db, passport) {
     var flash = require('connect-flash');
 
     var LocalStrategy = require('passport-local').Strategy;
-    var login = require('../passport/login.js')();
-    var signup = require('../passport/signup.js')();
-    var register = require('../passport/register.js')();
 
     //  URL: /
     router.get('/', function(req, res, next) {
-        res.render('index', { title: 'Express' });
+        res.render('index', {user: req.user, title: 'Express' });
     });
 
     router.get('/logout', function(req, res){
@@ -18,66 +15,91 @@ module.exports = function(db, passport) {
         res.redirect('/');
     });
 
+    //  URL: /home
+    router.get('/home', function(req,res) {
+        res.render('home', {user: req.user});
+    });
+
     //  URL: /about
     router.get('/about', function(req, res, next) {
-        res.render('index', { title: 'About' });
+        res.render('index', {user: req.user, title: 'About' });
     });
 
     //  GET Login Page
     router.get('/login', function(req, res) {
-        res.render('login', {});
+        if(req.user) res.redirect('/home');
+        res.render('./user/login', {});
     });
 
-    //  Handle Login Post Request
-    router.post('/login', function() {
+    //  POST Login Page
+    var login = require('../passport/login.js')(passport);
+    router.post('/login',
         passport.authenticate('login', {
             successRedirect:'/home',
             failureRedirect:'/',
             failureFlash: true
-        })
-    });
+    }));
 
     //  GET Signup page
     router.get('/signup', function(req, res) {
-        res.render('signup',{});
+        if(req.user) res.redirect('/home');
+        res.render('./user/signup',{});
     });
 
-    //  GET Signup page
-    router.post('/signup', passport.authenticate('signup', {
-        successRedirect: '/home',
-        failureRedirect: '/',
-        failureFlash: true
+    //  POST Signup page
+    var signup = require('../passport/signup.js')(passport);
+    router.post('/signup',
+        passport.authenticate('signup', {
+            successRedirect: '/home',
+            failureRedirect: '/',
+            failureFlash: true
     }));
 
-    //  GET Regisration Page
-    router.get('/register', function(req, res) {
-        res.render('register');
+    //  GET Create School Page
+    router.get('/createSchool', function(req, res) {
+        res.render('admin/createSchool');
     });
 
-    //  POST Regisration Page
-    router.post('/register', passport.authenticate('register', {
-        successRedirect: '/home',
-        failureRedirect: '/',
-        failureFlash: true
-    }));
+    //  POST Create School Page
+    var createSchool = require('../operations/createSchool.js');
+    router.post('/createSchool',function(req,res) {
+        var School = require('../schemas/school.js');
+        var newSchool = new School();
+        console.log(req.params);
+        newSchool.name = req.body['schoolName'];
+        newSchool.link = req.body['schoolLink'];
+        newSchool.admins = [req.user._id];
+
+        newSchool.save(function(err) {
+            if(err) {
+                console.log('Error in Saving school: ' + err);
+                throw err;
+            }
+            console.log('School Creation Succesful');
+        });
+        res.send(ok);
+    });
 
     //  URL: /schoolName
     router.get('/:school', function(req,res,next) {
-        console.log(req.user);
+        var School = require('../schemas/school.js');
+        School.find({schoolLink:req.params.school}, function(err, school) {
+            if (err){
+                console.log('Error finding school: '+ err);
+                res.sendStatus(500);
+            }
+            if(school) {
+
+            }
+        });
         res.render('home', {
             'title':req.params.school,
-            'pageData': {
-                'calendarFilepath':'/static/data/calendar.json',
-                '_UI_IDs': {
-                    'time':'#time',
-                    'date':'#date',
-                    'dayType':'#dayType',
-                    'section':'#section',
-                    'countdown':'#countdown'
-                }
-            }
+
         })
     });
+
+    //  URL: /schoolName
+
 
     return router;
 }

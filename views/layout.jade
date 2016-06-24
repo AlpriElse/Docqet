@@ -3,9 +3,34 @@ html
     head
         title= title
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/bootstrap.min.css')
-        link(rel='stylesheet', type='text/css', href='/static/stylesheets/bootstrap-theme.min.css')
+        link(rel='stylesheet', type='text/css', href='/static/stylesheets/tether.min.css')
+        link(rel='stylesheet', type='text/css', href='/static/stylesheets/style.css')
     body
-        a(href='/') Home
-        block content
+        .navbar.navbar-fixed-top.navbar-dark.bg-inverse
+            .container
+                a.navbar-brand(href='/') Sundial
+                ul.nav.navbar-nav
+                    li.nav-item 
+                        a.nav-link(href='/') Home
+                    li.nav-item.pull-xs-right
+                        if user 
+                            .btn-group
+                                button.btn.btn-link.dropdown-toggle(style='color:white',data-toggle='dropdown',aria-haspopup='true', aria-expanded='false') #{user.name}
+                                  span.sr-only Toggle Dropdown
+                                .dropdown-menu
+                                    a.dropdown-item(href='/createSchool') Create School 
+                                    a.dropdown-item(href='#') Manage School
+                                    .dropdown-divider
+                                    a.dropdown-item(href='/settings') Settings
+                                    .dropdown-divider
+                                    a.dropdown-item(href='/logout') Logout
+                        else
+                            button.btn.btn-link(style='color: white', onclick="document.location.href = '/login'") Log in
+        .container(style='margin-top: 100px')
+            block content
     footer
+        script(src='/static/javascripts/plugins/jquery.min.js')
+        script(src='/static/javascripts/plugins/tether.min.js')
+        script(src='/static/javascripts/plugins/bootstrap.min.js')
         block dependences
+        block footer

@@ -1,32 +1,33 @@
 extends layout
 
 block content
-    .container
+    if user
         h1 #{title}
-        .panel.panel-default
-            .panel-heading
-                h3 Clock
-            .panel-body
+        .card 
+            .card-block
+                h3.card-title Clock
                 p#section  
                 p#time  
                 p#date  
                 p#dayType  
-                p#countdown  
-        .panel.panel-default
-            .panel-heading
-                h3 Events Right Now
-            .panel-body
+                p#countdown 
+        .card
+            .card-block
+                h3.card-title Events Right Now 
                 #nowList
                   ul.list
-        .panel.panel-default
-            .panel-heading  
-                h3 Upcoming Events
-            .panel-body
+        .card
+            .card-block
+                h3.card-title Upcoming Events
                 #upcomingList
                   ul.list
+    else
+        h1 Welcome to Sundial...
+        h3 
+            a(href='/signup') Sign up now
+
                   
 block dependences
-    script(src='/static/javascripts/plugins/jquery.min.js')
     script(src='/static/javascripts/plugins/moment.js')
     script(src='/static/javascripts/plugins/moment-range.min.js')
     script(src='/static/javascripts/plugins/moment-recur.min.js')
@@ -35,6 +36,13 @@ block dependences
     script(src='/static/javascripts/events.js')
     
     script.
-        var calendarFilepath = '!{pageData.calendarFilepath}';
-        var _UI_IDs = !{JSON.stringify(pageData._UI_IDs)}
+        var calendarFilepath = '/static/data/calendar.json'
+        var _UI_IDs = {
+            'time':'#time',
+            'date':'#date',
+            'dayType':'#dayType',
+            'section':'#section',
+            'countdown':'#countdown'
+        }
+
     script(src='/static/javascripts/initializer.js')
