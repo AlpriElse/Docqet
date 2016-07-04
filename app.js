@@ -10,6 +10,7 @@ module.exports = function(db, passport) {
 
     //  Initialize App
     var app = express();
+    app.use('/static', express.static(__dirname + '/public'));
 
     //  Configuring Passport
     var session = require('express-session');

@@ -61,23 +61,39 @@ module.exports = function(db, passport) {
     });
 
     //  POST Create School Page
-    var createSchool = require('../operations/createSchool.js');
-    router.post('/createSchool',function(req,res) {
+    router.post('/createSchool', function(req,res) {
         var School = require('../schemas/school.js');
-        var newSchool = new School();
-        console.log(req.params);
-        newSchool.name = req.body['schoolName'];
-        newSchool.link = req.body['schoolLink'];
-        newSchool.admins = [req.user._id];
+        School.findOne({ link: req.body['schoolLink']}, function(err, school) {
+            if(err) return done(err);
+            console.log(school);
+            if(school) {
+                console.log('School Already Exists');
+                res.send('Error: School Already Exists');
+            } else {
+                var newSchool = new School();
+                newSchool.name = req.body['schoolName'];
+                newSchool.link = req.body['schoolLink'];
+                newSchool.admins = [req.user._id];
 
-        newSchool.save(function(err) {
-            if(err) {
-                console.log('Error in Saving school: ' + err);
-                throw err;
+                newSchool.save(function(err) {
+                    if(err) {
+                        console.log('Error in Saving school: ' + err);
+                        throw err;
+                    }
+                    console.log('School Creation Succesful');
+                    res.send('School Created');
+                });
             }
-            console.log('School Creation Succesful');
         });
-        res.send(ok);
+    });
+
+    //  Get Manage School Page
+    router.get('/manageSchool', function(req, res) {
+        var School = require('../schemas/school.js');
+        School.find({admins: req.user._id}, function(err, schools) {
+            if(err) return done(err);
+            res.render('admin/manageSchool', { schools: schools});
+        })
     });
 
     //  URL: /schoolName

@@ -2,7 +2,12 @@
 ## Please ignore this repository.
 
 ## Change Log
+* July 4, 2016 01:46
+    * Commit:
+    * Added: Manage Schools Page and School Selection
+    * TODO: Implement Manage School Functionality
 * June 24, 2016 00:50
+    * Commit: 37c70f0f03c0a488088a89e0f8b287aa8bc4f2ee
     * Moved School Registration to User feature
     * Fixed Session Persistence
     * Moved User related pages into a views subdirectory
