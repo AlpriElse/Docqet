@@ -1,9 +1,9 @@
-# Sundial
+# Docqet
 ## Please ignore this repository.
 
 ## Change Log
 * July 4, 2016 01:46
-    * Commit:
+    * Commit:935712e5bda9c9bfaf8d61d43b417a2260b11650
     * Added: Manage Schools Page and School Selection
     * TODO: Implement Manage School Functionality
 * June 24, 2016 00:50

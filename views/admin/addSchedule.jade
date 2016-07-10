@@ -1,0 +1,139 @@
+extends ../layout
+
+- var schools = !{JSON.stringify(schools)}
+block content
+    .card.col-md-8.col-md-offset-2
+        .card-block
+            h1.text-xs-center Add a Schedule
+            br
+            form
+                .row
+                    .input-group.col-xs-12
+                        input.form-control(id='scheduleName' type='text',placeholder='schedule name')
+                        span.input-group-btn
+                            button.btn.btn-secondary(onclick='toggleIcon()', id='iconToggle')
+                                i.fa.fa-check(id='scheduleNameIcon',aria-hidden='true')
+                .row
+                    br
+                    table.table.col-xs-12
+                        tbody(id='scheduleTable')
+                        
+                .row
+                    .col-xs-4
+                        input.form-control(id='sectionName',type='text', placeholder='section name')
+        
+                    .col-xs-3
+                        input.form-control(id='sectionStart',type='time', placeholder='start time')
+                    .col-xs-3
+                        input.form-control(id='sectionEnd',type='time', placeholder='end time')
+                    .col-xs-2
+                        input.btn.btn-secondary(type='button',onclick='add();',id='addSection', value='Add') 
+                .row
+                    .col-xs-12.text-xs-center
+                        .alert.alert-danger(role='alert',id='invalid')
+                            strong Error:
+                            |  Invalid input!
+
+                    
+            button.btn.btn-primary.btn-block.form-control(onclick='submit()', id='submit') Submit
+            br
+            .alert.alert-danger(role='alert', id='failure')
+                strong Oh snap!
+                |  We totally messed up. Please try submitting again.
+            .alert.alert-success(role='alert', id='success')
+                strong Nice!
+                |  Schedule added successfully!
+
+    style.
+        tr .delete {
+            display: none;
+        }
+        tr:hover .delete {
+            display: inline;
+        }
+    script.
+        $(document).ready(function() {
+            $('form').submit(false);
+            $('#invalid,#failure,#success').hide();
+            $('tr').on('mouseenter',function() {
+                console.log('hovering');
+            });
+        });
+        
+        var sections = [];
+        var icon = true;
+        
+        function toggleIcon() {
+            console.log('toggle');
+            if(icon) {
+                $('#scheduleNameIcon').addClass('fa-pencil-square-o').removeClass('fa-check');
+                $('#scheduleName').prop('disabled',true);
+                icon = false;
+            } else {
+                $('#scheduleNameIcon').removeClass('fa-pencil-square-o').addClass('fa-check');
+                $('#scheduleName').prop('disabled',false);
+                icon = true;
+            }
+            
+        }
+        function add() {
+            var name = $('#sectionName').val(),
+                start = $('#sectionStart').val(),
+                end = $('#sectionEnd').val();
+                
+            if(name == '' || start == '' || end == '') {
+                $('#invalid').show();
+                return
+            }
+            $('#invalid').hide();
+            var itemID = Math.floor(Math.random()*8999)+1000;
+            var section = {
+                name: name,
+                start: start,
+                end: end,
+                itemID: itemID
+            }
+            sections.push(section);
+            $('#scheduleTable').append('<tr class="row" id="' + itemID + '"><td class="col-xs-4">'+ section.name + '</td><td class="col-xs-3">'+ section.start +'</td><td class="col-xs-3">'+ section.end+'</td><td class="col-xs-2"><button type="button" class="btn btn-sm btn-danger delete" onclick="removeSection(' + itemID + ')"><i class="fa fa-times" aria-hidden="true"></i></button></td></tr>');
+            $('#sectionName,#sectionStart,#sectionEnd').val('');
+        }
+        function removeSection(itemID) {
+            $('#'+itemID).remove();
+            sections.forEach(function(val, idx, arr){
+                if(val.itemID = itemID) {
+                    arr.splice(idx,1);
+                }
+            });
+        }
+        function submit() {
+            if(sections.length == 0 || $('#scheduleName').val() == '') {
+                $('#invalid').show();
+                return 
+            }
+            $('#invalid').hide();
+            
+            $('input').prop('disabled', true);
+            $('#submit, #iconToggle,#addSection').prop('disabled', true);
+            var schedule = {
+                name: $('#scheduleName').val(),
+                schedule: sections
+            }
+            
+            var path = window.location.pathname + '/addSchedule';
+            console.log(schedule.schedule);
+            $.ajax({
+              type: 'POST',
+              data: JSON.stringify(schedule),
+              contentType: 'application/json',
+              url: path
+          }).done(function(data) {
+              if(data == 'success') {
+                  $('#success').show();
+              } else if (data=='failure'){
+                  $('#failure').show();
+              } else {
+                  window.location.href = '/unauthorized';
+              }
+          });
+        }
+        

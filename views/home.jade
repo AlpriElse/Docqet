@@ -2,40 +2,51 @@ extends layout
 
 block content
     if user
-        h1 #{title}
-        .card 
-            .card-block
-                h3.card-title Clock
-                p#section  
-                p#time  
-                p#date  
-                p#dayType  
-                p#countdown 
-        .card
-            .card-block
-                h3.card-title Events Right Now 
-                #nowList
-                  ul.list
-        .card
-            .card-block
-                h3.card-title Upcoming Events
-                #upcomingList
-                  ul.list
+        if user.schoolAffiliation
+            h1 #{title}
+            .card 
+                .card-block
+                    h3.card-title Clock
+                    p#section  
+                    p#time  
+                    p#date  
+                    p#dayType  
+                    p#countdown 
+            .card
+                .card-block
+                    h3.card-title Events Right Now 
+                    #nowList
+                      ul.list
+            .card
+                .card-block
+                    h3.card-title Upcoming Events
+                    #upcomingList
+                      ul.list
+        else
+            .card
+                .card-block
+                    h4.card-title Add School Affiliation
+                    form
+                        fieldset.form-group
+                            .input-group
+                                input.form-control(placeholder='school')
+                                span.input-group-btn
+                                    button.btn.btn-secondary
+                                        i.fa.fa-search(aria-hidden='true')
+                    #schools
+                        ul.list
     else
         h1 Welcome to Sundial...
         h3 
             a(href='/signup') Sign up now
 
-                  
-block dependences
-    script(src='/static/javascripts/plugins/moment.js')
-    script(src='/static/javascripts/plugins/moment-range.min.js')
-    script(src='/static/javascripts/plugins/moment-recur.min.js')
-    script(src='/static/javascripts/plugins/list.js')
+    script(src='bower_components/moment/moment.js')
+    script(src='bower_components/moment-range/dist/moment-range.js')
+    script(src='bower_components/moment-recur/moment-recur.js')
+    script(src='bower_components/list.js/dist/list.js')
     script(src='/static/javascripts/clock.js')
     script(src='/static/javascripts/events.js')
-    
-    script.
+    script. 
         var calendarFilepath = '/data/calendar.json'
         var _UI_IDs = {
             'time':'#time',
@@ -44,5 +55,19 @@ block dependences
             'section':'#section',
             'countdown':'#countdown'
         }
+        
+        var options = {
+            valueNames: ['school'],
+            item: '<li><span class="school"></span></li>'
+        };
 
+        var schoolList = new List('schools', options);
+        console.log('hello');
+        schoolList.add({
+            school: "Maine South"
+        });
+
+        $(document).ready(function() {
+            
+        });
     script(src='/static/javascripts/initializer.js')

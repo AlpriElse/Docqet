@@ -9,7 +9,7 @@ block content
             br
             if schools
                 each school in schools
-                    button.btn.btn-secondary.btn-lg.btn-block(type='button')= school.name
+                    button.btn.btn-secondary.btn-lg.btn-block(type='button',onclick="location.href = '/manageSchool/' + '#{school.link}';")= school.name
             else
                 h3 
                     a(href='/createSchool') Create a school!

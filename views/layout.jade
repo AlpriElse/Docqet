@@ -5,13 +5,24 @@ html
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/bootstrap.min.css')
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/tether.min.css')
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/style.css')
+        link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.min.css')
+        
+        script(src='/bower_components/angular/angular.min.js')
+        script(src='/static/javascripts/plugins/jquery.min.js')
+        script(src='/static/javascripts/plugins/tether.min.js')
+        script(src='/static/javascripts/plugins/bootstrap.min.js')
+
     body
         .navbar.navbar-fixed-top.navbar-dark.bg-inverse
             .container
-                a.navbar-brand(href='/') docqet
+                a.navbar-brand(href='/') DOCQET
                 ul.nav.navbar-nav
-                    li.nav-item 
-                        a.nav-link(href='/') Home
+                    li.nav-item
+                        a.nav-link(href='/') Students
+                    li.nav-item
+                        a.nav-link(href='/') Teachers
+                    li.nav-item
+                        a.nav-link(href='/') Instittions
                     li.nav-item.pull-xs-right
                         if user 
                             .btn-group
@@ -26,11 +37,8 @@ html
                                     a.dropdown-item(href='/logout') Logout
                         else
                             button.btn.btn-link(style='color: white', onclick="document.location.href = '/login'") Log in
-        .container(style='margin-top: 100px')
+        
+        .container(style='margin-top: 50px')
+        
             block content
-    footer
-        script(src='/static/javascripts/plugins/jquery.min.js')
-        script(src='/static/javascripts/plugins/tether.min.js')
-        script(src='/static/javascripts/plugins/bootstrap.min.js')
-        block dependences
-        block footer
+            
