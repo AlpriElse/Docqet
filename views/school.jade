@@ -1,0 +1,15 @@
+script(src='bower_components/moment/moment.js')
+script(src='bower_components/moment-range/dist/moment-range.js')
+script(src='bower_components/moment-recur/moment-recur.js')
+script(src='bower_components/list.js/dist/list.js')
+script(src='/static/javascripts/clock.js')
+script. 
+    var calendarFilepath = '/data/calendar.json'
+    var _UI_IDs = {
+        'time':'#time',
+        'date':'#date',
+        'dayType':'#dayType',
+        'section':'#section',
+        'countdown':'#countdown'
+    }
+    CLOCK(_UI_IDs, calendarFilepath);

@@ -1,13 +1,15 @@
 doctype html
 html
     head
-        title= title
+        title Docqet
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/bootstrap.min.css')
+        link(rel='stylesheet', type='text/css', href='/bower_components/animate.css/animate.css')
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/tether.min.css')
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/style.css')
         link(rel='stylesheet', href='/bower_components/font-awesome/css/font-awesome.min.css')
         
         script(src='/bower_components/angular/angular.min.js')
+        script(src='/bower_components/underscore/underscore.js')
         script(src='/static/javascripts/plugins/jquery.min.js')
         script(src='/static/javascripts/plugins/tether.min.js')
         script(src='/static/javascripts/plugins/bootstrap.min.js')
@@ -18,27 +20,19 @@ html
                 a.navbar-brand(href='/') DOCQET
                 ul.nav.navbar-nav
                     li.nav-item
-                        a.nav-link(href='/') Students
-                    li.nav-item
-                        a.nav-link(href='/') Teachers
-                    li.nav-item
-                        a.nav-link(href='/') Instittions
+                        a.nav-link(href='/') Home
                     li.nav-item.pull-xs-right
                         if user 
                             .btn-group
                                 button.btn.btn-link.dropdown-toggle(style='color:white',data-toggle='dropdown',aria-haspopup='true', aria-expanded='false') #{user.name}
                                   span.sr-only Toggle Dropdown
                                 .dropdown-menu
-                                    a.dropdown-item(href='/createSchool') Create School 
-                                    a.dropdown-item(href='/manageSchool') Manage School
-                                    .dropdown-divider
                                     a.dropdown-item(href='/settings') Settings
                                     .dropdown-divider
                                     a.dropdown-item(href='/logout') Logout
                         else
                             button.btn.btn-link(style='color: white', onclick="document.location.href = '/login'") Log in
         
-        .container(style='margin-top: 50px')
-        
-            block content
+        block content
+                
             

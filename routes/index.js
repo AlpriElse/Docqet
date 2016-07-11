@@ -7,28 +7,13 @@ module.exports = function(db, passport) {
 
     //  URL: /
     router.get('/', function(req, res, next) {
-        res.render('index', {user: req.user, title: 'Express' });
+        res.render('index', {user: req.user});
     });
 
     //  Logout Handler
     router.get('/logout', function(req, res){
         req.logout();
         res.redirect('/');
-    });
-
-    //  URL: /home
-    router.get('/home', function(req,res) {
-        var User = require('../schemas/user.js');
-        var School = require('../schemas/school.js');
-        User.findOne({email: req.user.email}, function(err, user) {
-            if(err) return done(err);
-
-        });
-        console.log(req.user);
-        res.render('home', {
-            user: req.user
-
-        });
     });
 
     //  GET Login Page
@@ -63,73 +48,95 @@ module.exports = function(db, passport) {
 
     //  GET Create School Page
     router.get('/createSchool', function(req, res) {
-        res.render('admin/createSchool');
+        res.render('admin/createSchool', {
+            user: req.user
+        });
     });
 
     //  POST Create School Page & Add to Database
     router.post('/createSchool', function(req,res) {
         var School = require('../schemas/school.js');
-        School.findOne({ link: req.body['schoolLink']}, function(err, school) {
+        var User = require('../schemas/user.js');
+        User.findOne({_id: req.user._id},function(err,user) {
             if(err) return done(err);
-            if(school) {
-                console.log('School Already Exists');
-                res.send('Error: School Already Exists');
+            if(!user) {
+                console.log('Couldnt find school.');
+                res.send('Couldnt find user.');
             } else {
-                var newSchool = new School();
-                newSchool.name = req.body['schoolName'];
-                newSchool.link = req.body['schoolLink'];
-                newSchool.admins = [req.user._id];
+                if(user.schoolAffiliation) {
+                    console.log('Error: You have already created a school');
+                    res.send('You have already created a school!');
+                } else {
+                    School.findOne({ link: req.body['schoolLink']}, function(err, school) {
+                            if(err) return done(err);
+                        if(school) {
+                            console.log('School Already Exists');
+                            res.send('Error: School Already Exists');
+                        } else {
+                            var newSchool = new School();
+                            newSchool.name = req.body['schoolName'];
+                            newSchool.link = req.body['schoolLink'];
+                            newSchool.admin = req.user._id;
 
-                newSchool.save(function(err) {
-                    if(err) {
-                        console.log('Error in Saving school: ' + err);
-                        throw err;
-                    }
-                    console.log('School Creation Succesful');
-                    res.send('School Created');
-                });
+                            newSchool.save(function(err) {
+                                if(err) {
+                                    console.log('Error in Saving school: ' + err);
+                                    throw err;
+                                }
+                                //  Add School ID to User
+                                user.schoolAffiliation = newSchool._id;
+                                user.save(function(err) {
+                                    if(err) {
+                                        console.log('Error adding school to user ' + err);
+                                        throw err;
+                                    }
+                                    console.log('School Creation Succesful');
+                                    res.send('School Created');
+                                });
+                            });
+                        }
+                    });
+                }
             }
         });
     });
 
-    //  Get Manage School Page
-    router.get('/manageSchool', function(req, res) {
+    //  URL: /home
+    router.get('/home', function(req,res) {
+        var User = require('../schemas/user.js');
         var School = require('../schemas/school.js');
-        School.find({admins: req.user._id}, function(err, schools) {
+        if(!req.user) {
+            res.redirect('/');
+            return;
+        }
+        User.findOne({email: req.user.email}, function(err, user) {
+            var School = require('../schemas/school.js');
             if(err) return done(err);
-            res.render('admin/manageSchool', {
-                user: req.user,
-                schools: schools
+            School.findOne({_id: req.user.schoolAffiliation}, function(err, school) {
+                if(err || !school) {
+                    console.log('School lookup error!');
+                    res.render('home', {
+                        user: req.user,
+                        school: undefined
+                    })
+                } else {
+                    delete school.admin
+                    res.render('home', {
+                        user: req.user,
+                        school: school
+                    });
+                }
             });
-        })
+        });
     });
 
     //  Get Specific Manage School Page
-    router.get('/manageSchool/:school', function(req, res) {
+    router.get('/addSchedule/:school', function(req, res) {
         var School = require('../schemas/school.js');
         res.render('admin/addSchedule', {
             user: req.user,
             school: req.params.school
         });
-    });
-
-    //  URL: /schoolName
-    router.get('/:school', function(req,res,next) {
-        var School = require('../schemas/school.js');
-        School.find({schoolLink:req.params.school}, function(err, school) {
-            if (err){
-                console.log('Error finding school: '+ err);
-                res.sendStatus(500);
-            }
-            if(school) {
-                delete school.admins
-                res.render('home', {
-                    'title':req.params.school,
-                    'school':school
-                })
-            }
-        });
-
     });
 
     //  POST New schedule
@@ -152,7 +159,7 @@ module.exports = function(db, passport) {
                 console.log('Error finding school: ' + err);
                 res.sendStatus(500);
             }
-            if(!req.user || !school.admins.includes(req.user._id)) {
+            if(!req.user || school.admin != req.user._id) {
                 res.send('not authorized');
             } else if(school) {
                 school.schedules.push(schedule);
@@ -168,6 +175,21 @@ module.exports = function(db, passport) {
         });
     });
 
-
+    //  URL: /schoolName
+    router.get('/:school', function(req,res,next) {
+        var School = require('../schemas/school.js');
+        School.find({schoolLink:req.params.school}, function(err, school) {
+            if (err){
+                console.log('Error finding school: '+ err);
+                res.sendStatus(500);
+            }
+            if(school) {
+                delete school.admin
+                res.render('home', {
+                    'school':school
+                })
+            }
+        });
+    });
     return router;
 }
