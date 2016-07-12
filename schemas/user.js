@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('User',{
     name: {type: String, required: true },
     password: {type: String, required: true},
-    schoolAffiliation: {type: Schema.ObjectId, default: undefined},
+    schoolAffiliation: {type: String, default: undefined},
     email: {type: String, required: true},
     betakey: {type: String, required: true}
 });

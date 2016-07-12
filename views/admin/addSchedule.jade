@@ -1,67 +1,81 @@
 extends ../layout
 
-- var schools = !{JSON.stringify(schools)}
+- var school = !{school};
 block content
     .container(style='margin-top: 50px', ng-app='addSchedule')
         .card.col-md-8.col-md-offset-2
-            .card-block(ng-controller='MainController')
-                h1.text-xs-center Add a Schedule
-                br
-                form(ng-submit='addSection()', ng-hide='submitted')
-                    .row
-                        .input-group.col-xs-12
-                            input.form-control(ng-model='scheduleName', type='text', placeholder='schedule name')
-                            span.input-group-btn
-                                button.btn.btn-secondary
-                                    i.fa.fa-check(aria-hidden='true')
-                    br(ng-hide='sections.length > 0')
-                    .row
-                        table.table.col-xs-12(ng-show='sections.length > 0')
-                            thead
-                                tr
-                                    th Section
-                                    th Start
-                                    th End
-                            tbody
-                                tr(ng-repeat='section in sections')
-                                    td {{section.name}}
-                                    td {{section.start}}
-                                    td {{section.end}}    
-                                    td 
-                                        button.btn.btn-danger(ng-click="removeSection(section.name)", type='button')
-                                            i.fa.fa-times(aria-hidden='true')
-                                    
-                    .row
-                        .col-xs-4
-                            input.form-control(ng-model='sectionName', type='text', placeholder='section name', required=true)
-            
-                        .col-xs-3
-                            input.form-control(ng-model='sectionStart', type='time', placeholder='start time', required=true)
-                        .col-xs-3
-                            input.form-control(ng-model='sectionEnd', type='time', placeholder='end time', required=true)
-                        .col-xs-2
-                            input.btn.btn-secondary(type='submit', value='Add') 
-                    button.btn.btn-primary.btn-block.form-control(ng-click='submit()') Submit
+            if user.schoolAffiliation
+                .card-block(ng-controller='MainController')
+                    h1.text-xs-center Add a Schedule
+                    br
+                    form(ng-submit='addSection()', ng-hide='submitted')
+                        .row
+                            .input-group.col-xs-12
+                                input.form-control(ng-model='scheduleName', type='text', placeholder='schedule name')
+                                span.input-group-btn
+                                    button.btn.btn-secondary
+                                        i.fa.fa-check(aria-hidden='true')
+                        br(ng-hide='sections.length > 0')
+                        .row
+                            table.table.col-xs-12(ng-show='sections.length > 0')
+                                thead
+                                    tr
+                                        th Section
+                                        th Start
+                                        th End
+                                tbody
+                                    tr(ng-repeat='section in sections')
+                                        td {{section.name}}
+                                        td {{section.start}}
+                                        td {{section.end}}    
+                                        td 
+                                            button.btn.btn-danger(ng-click="removeSection(section.name)", type='button')
+                                                i.fa.fa-times(aria-hidden='true')
+                                        
+                        .row
+                            .col-xs-4
+                                input.form-control(ng-model='sectionName', type='text', placeholder='section name', required=true)
                 
-                br
-                .alert.alert-danger(ng-show='done && submitError', role='alert')
-                    strong Oh snap!
-                    |  We totally messed up. Please try submitting again later.
-                .alert.alert-success(ng-show='done && !submitError', role='alert')
-                    strong Nice!
-                    |  Schedule added successfully!
+                            .col-xs-3
+                                input.form-control(ng-model='sectionStart', type='time', placeholder='start time', required=true)
+                            .col-xs-3
+                                input.form-control(ng-model='sectionEnd', type='time', placeholder='end time', required=true)
+                            .col-xs-2
+                                input.btn.btn-secondary(type='submit', value='Add') 
+                        button.btn.btn-primary.btn-block.form-control(ng-click='submit()') Submit
+                    
+                    br
+                    .alert.alert-danger(ng-show='done && submitError', role='alert')
+                        strong Oh snap!
+                        |  We totally messed up. Please try submitting again later.
+                        p 
+                            a(href='/home') Return home.
+                    .alert.alert-success(ng-show='done && !submitError', role='alert')
+                        strong Nice!
+                        |  Schedule added successfully!
+                        p
+                            a(href='/home') Return home.
+            else
+                .card-block
 
 
     script(src='/bower_components/moment/moment.js')
     script.
+        var school = !{JSON.stringify(school)};
+    script.
         (function() {
             var app = angular.module('addSchedule', []);
             
-            var MainController = function($scope){
+            var MainController = function($scope, $http){
                 $scope.sections = [];
                 $scope.submitted = false;
                 $scope.done = false;
                 $scope.submitError = false;
+                
+                var onError = function() {
+                    $scope.done = true;
+                    $scope.submitError = true;
+                };
                 
                 $scope.addSection = function() {
                     $scope.sections.push({
@@ -80,13 +94,26 @@ block content
                 }
                 $scope.submit = function() {
                     $scope.submitted = true;
-                    console.log('submitted');
-                    $scope.done = true;
-                    $scope.submitError = false;
+                    console.log(school);
+                    var url = '/addSchedule/' + school.link;
+                    $http.post(url, {
+                        scheduleName: $scope.scheduleName,
+                        sections: $scope.sections
+                    },{
+                        headers: {'Content-Type': 'application/json'}
+                    }).then(function(res) {
+                        if(res.data == 'success') {
+                            $scope.done = true;
+                            $scope.submitError = false;
+                        } else {
+                            onError();
+                        }
+                        
+                    }, onError);
                 }
             }
             
-            app.controller('MainController', ['$scope', MainController]);
+            app.controller('MainController', ['$scope','$http', MainController]);
         }());
 
         

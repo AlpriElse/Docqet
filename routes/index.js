@@ -118,7 +118,7 @@ module.exports = function(db, passport) {
                     res.render('home', {
                         user: req.user,
                         school: undefined
-                    })
+                    });
                 } else {
                     delete school.admin
                     res.render('home', {
@@ -133,21 +133,32 @@ module.exports = function(db, passport) {
     //  Get Specific Manage School Page
     router.get('/addSchedule/:school', function(req, res) {
         var School = require('../schemas/school.js');
-        res.render('admin/addSchedule', {
-            user: req.user,
-            school: req.params.school
+        School.findOne({_id: req.user.schoolAffiliation}, function(err, school) {
+            if(err || !school) {
+                console.log('School lookup error!');
+                res.render('admin/addSchedule', {
+                    user: req.user,
+                    school: undefined
+                })
+            } else {
+                delete school.admin
+                res.render('admin/addSchedule', {
+                    user: req.user,
+                    school: school
+                });
+            }
         });
     });
 
     //  POST New schedule
-    router.post('/manageSchool/:school/addSchedule', function(req, res) {
+    router.post('/addSchedule/:school', function(req, res) {
         var School = require('../schemas/school.js');
         var moment = require('moment');
 
         var schedule = {};
-        schedule.name = req.body.name;
+        schedule.name = req.body.scheduleName;
         schedule.sections = [];
-        req.body.schedule.forEach(function(val, idx, arr) {
+        req.body.sections.forEach(function(val, idx, arr) {
             schedule.sections.push({
                 name: val.name,
                 start: moment(val.start,'HH:mm').format('HH:mm'),
@@ -158,20 +169,24 @@ module.exports = function(db, passport) {
             if(err) {
                 console.log('Error finding school: ' + err);
                 res.sendStatus(500);
+                return
             }
-            if(!req.user || school.admin != req.user._id) {
+            if(!req.user || (String(school.admin) != String(req.user._id))) {
                 res.send('not authorized');
-            } else if(school) {
-                school.schedules.push(schedule);
-                school.save(function(err) {
-                    if(err) {
-                        console.log('Error adding Schedule ') + schedule.name;
-                        res.send('err');
-                        throw err;
-                    }
-                    res.send('success');
-                });
+                console.log('not authorized');
+                return
             }
+            school.schedules.push(schedule);
+            school.save(function(err) {
+                if(err) {
+                    console.log('Error adding Schedule ') + schedule.name;
+                    res.send('err');
+                    return
+                } else {
+                    res.send('success');
+                    return
+                }
+            });
         });
     });
 
@@ -191,5 +206,6 @@ module.exports = function(db, passport) {
             }
         });
     });
+
     return router;
 }

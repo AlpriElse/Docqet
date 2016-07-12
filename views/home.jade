@@ -3,21 +3,33 @@ extends layout
 block content
     .container(style='margin-top: 50px', ng-app='')
         if user
-            if user.schoolAffiliation
-                .card
+            if user.schoolAffiliation 
+                h1 #{school.name}
+                br
+                .card(ng-controller='ScheduleController')
                     .card-block
                         .card-title
                             h2 Schedules
+                        p(ng-hide='schedules') No schedules currently added.
                         h5 Add a new schedule by clicking <a href='/addSchedule/#{school.link}'>here.</a>
+                script.
+                    var school = !{JSON.stringify(school)}
+                    console.log(school);
                 script.
                     (function() {
                         var app = angular.module('createSchool', []);
                         
-                        var MainController = function($scope){
+                        var MainController = function($scope) {
                             
-                        }
+                        };
+                        var ScheduleController = function($scope) {
+                            $scope.schedules = school.schedules;
                         
-                        app.controller('MainController',['$scope','MainController']);
+                            
+                        };
+                        
+                        app.controller('MainController',['$scope',MainController]);
+                        app.controller('ScheduleController',['$scope',ScheduleController]);
                     }())
             else
                 .card
