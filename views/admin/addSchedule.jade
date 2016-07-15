@@ -2,10 +2,10 @@ extends ../layout
 
 block content
     .container(style='margin-top: 50px', ng-app='addSchedule')
-        .panel.col-md-8.col-md-offset-2
+        .panel.panel-default.col-md-8.col-md-offset-2
             if user.schoolAffiliation
-                .card-block(ng-controller='MainController')
-                    h1.text-xs-center Add a Schedule
+                .panel-body(ng-controller='MainController')
+                    h1.text-center Add a Schedule
                     br
                     form(ng-submit='addSection()', ng-hide='submitted')
                         .row
@@ -55,7 +55,8 @@ block content
                         p
                             a(href='/home') Return home.
             else
-                .card-block
+                .panel.panel-default
+                    .panel-heading We fucked up
 
 
     script(src='/bower_components/moment/moment.js')

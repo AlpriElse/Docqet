@@ -2,9 +2,9 @@ extends ../layout
 
 block content
     .container(style='margin-top:50px', ng-app='createSchool')
-        .card.col-md-6.col-md-offset-3
-            .card-block
-                h1.text-xs-center Create School 
+        .panel.panel-default.col-md-6.col-md-offset-3
+            .panel-body
+                h1.text-center Create School 
                 br
                 form(action='/createSchool', method='POST')
                     .form-group
