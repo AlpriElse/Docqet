@@ -2,7 +2,7 @@ doctype html
 html
     head
         title Docqet
-        link(rel='stylesheet', type='text/css', href='/static/stylesheets/bootstrap.min.css')
+        link(rel='stylesheet', type='text/css', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
         link(rel='stylesheet', type='text/css', href='/bower_components/animate.css/animate.css')
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/tether.min.css')
         link(rel='stylesheet', type='text/css', href='/static/stylesheets/style.css')
@@ -11,28 +11,36 @@ html
         script(src='/bower_components/angular/angular.min.js')
         script(src='/bower_components/underscore/underscore.js')
         script(src='/static/javascripts/plugins/jquery.min.js')
+        script(src='/bower_components/moment/moment.js')
         script(src='/static/javascripts/plugins/tether.min.js')
         script(src='/static/javascripts/plugins/bootstrap.min.js')
 
     body
-        .navbar.navbar-fixed-top.navbar-dark.bg-inverse
-            .container
-                a.navbar-brand(href='/') DOCQET
-                ul.nav.navbar-nav
-                    li.nav-item
-                        a.nav-link(href='/') Home
-                    li.nav-item.pull-xs-right
+        nav.navbar.navbar-fixed-top.navbar-inverse
+            .container-fluid
+                .navbar-header
+                    a.navbar-brand(href='#') Docqet
+                .collapse.navbar-collapse
+                    ul.nav.navbar-nav
+                        li
+                            a(href='/') Home 
+
+                    ul.nav.navbar-nav.navbar-right
                         if user 
-                            .btn-group
-                                button.btn.btn-link.dropdown-toggle(style='color:white',data-toggle='dropdown',aria-haspopup='true', aria-expanded='false') #{user.name}
-                                  span.sr-only Toggle Dropdown
-                                .dropdown-menu
-                                    a.dropdown-item(href='/settings') Settings
-                                    .dropdown-divider
-                                    a.dropdown-item(href='/logout') Logout
+                            li
+                                .btn-group
+                                    button.btn.btn-link.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                        | #{user.name} 
+                                    ul.dropdown-menu
+                                        li
+                                            a(href='/settings') Settings
+                                        li.divider(role='separator')
+                                        li
+                                            a(href='/logout') Logout
                         else
-                            button.btn.btn-link(style='color: white', onclick="document.location.href = '/login'") Log in
-        
+                            li
+                                a(href='Login') Login
+
         block content
                 
             

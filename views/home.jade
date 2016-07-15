@@ -1,35 +1,49 @@
 extends layout
 
 block content
-    .container(style='margin-top: 50px', ng-app='')
+    .container(style='margin-top: 50px', ng-app='home')
         if user
             if user.schoolAffiliation 
                 h1 #{school.name}
                 br
-                .card(ng-controller='ScheduleController')
+                .card.col-xs-8.col-md-offset-2(ng-controller='ScheduleController')
                     .card-block
                         .card-title
                             h2 Schedules
-                        p(ng-hide='schedules') No schedules currently added.
+                        ul.list-group(ng-show='hasSchedules', ng-repeat='schedule in schedules')
+                            li.list-group-item 
+                                {{schedule.name}}
+                                span.label.label-default.label-pill.pull-xs-right {{schedule.sections.length}}
+                        br
+                        p(ng-hide='hasSchedules') No schedules currently added.
                         h5 Add a new schedule by clicking <a href='/addSchedule/#{school.link}'>here.</a>
-                script.
-                    var school = !{JSON.stringify(school)}
-                    console.log(school);
+                        
+                br
+                .card.col-xs-8.col-md-offset-2(ng-controller='CalendarController')
+                    .card-block
+                        .card-title
+                            h2 Calendar
+                        h5 Calendar items.
+                link(href='bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css', rel='stylesheet')
+                script(src='bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.min.js')
                 script.
                     (function() {
-                        var app = angular.module('createSchool', []);
+                        var school = !{JSON.stringify(school)};
+                        console.log(school);
                         
-                        var MainController = function($scope) {
-                            
-                        };
+                        var app = angular.module('home', ['mwl.calendar', 'ui.bootstrap']);
+                        
                         var ScheduleController = function($scope) {
                             $scope.schedules = school.schedules;
-                        
+                            $scope.hasSchedules = $scope.schedules.length > 0;
+                            console.log($scope.hasSchedules);
+                        };  
+                        var CalendarController = function($scope) {
                             
                         };
                         
-                        app.controller('MainController',['$scope',MainController]);
                         app.controller('ScheduleController',['$scope',ScheduleController]);
+                        app.controller('CalendarController', ['$scope', CalendarController]);
                     }())
             else
                 .card
