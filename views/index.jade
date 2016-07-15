@@ -2,10 +2,10 @@ extends layout
 
 block content
     .container(style='margin-top: 50px', ng-app='schoolViewer')
-        .card
-            .card-block
-                .card-title
-                    h1 Find Your School!
+        .panel.panel-default
+            .panel-heading
+                h1.panel-title Find Your School!
+            .panel-body
                 form
                     .input-group
                         input.form-control(type='text', ng-model='school')

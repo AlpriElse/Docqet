@@ -2,7 +2,7 @@ extends ../layout
 
 block content
     .container(style='margin-top: 50px', ng-app='addSchedule')
-        .card.col-md-8.col-md-offset-2
+        .panel.col-md-8.col-md-offset-2
             if user.schoolAffiliation
                 .card-block(ng-controller='MainController')
                     h1.text-xs-center Add a Schedule
