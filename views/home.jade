@@ -24,14 +24,16 @@ block content
                         h2.panel-title Calendar items
                     .panel-body
                         h3 Body
-                link(href='bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css', rel='stylesheet')
-                script(src='bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.min.js')
+                link(href='/bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css', rel='stylesheet')
+                script(src='/bower_components/angular/angular-animate.min.js')
+                script(src='/bower_components/angular/angular-touch.min.js')
+                script(src='/bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js')
                 script.
                     (function() {
                         var school = !{JSON.stringify(school)};
                         console.log(school);
                         
-                        var app = angular.module('home', ['mwl.calendar', 'ui.bootstrap']);
+                        var app = angular.module('home', ['mwl.calendar','ngAnimate','ngTouch','ui.bootstrap']);
                         
                         var ScheduleController = function($scope) {
                             $scope.schedules = school.schedules;
@@ -44,7 +46,8 @@ block content
                         
                         app.controller('ScheduleController',['$scope',ScheduleController]);
                         app.controller('CalendarController', ['$scope', CalendarController]);
-                    }())
+                        
+                    }());
             else
                 .card
                     .card-block

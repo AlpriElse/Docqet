@@ -4,8 +4,7 @@
   "main": "",
   "authors": [
     "Alpri Else <alprielse@gmail.com>"
-  ],
-  "license": "MIT",
+],
   "homepage": "https://github.com/AlpriElse/Docqet",
   "private": true,
   "ignore": [
@@ -19,7 +18,7 @@
     "angular-bootstrap-calendar": "^0.21.5",
     "animate.css": "^3.5.2",
     "bootstrap-timepicker": "^0.5.2",
-    "bootstrap": "3.3.6",
+    "bootstrap": "3.*",
     "list.js": "^1.2.0",
     "moment-range": "^2.2.0",
     "moment-recur": "^1.0.5",
