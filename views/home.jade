@@ -13,7 +13,7 @@ block content
                         ul.list-group(ng-show='hasSchedules', ng-repeat='schedule in schedules')
                             li.list-group-item 
                                 {{schedule.name}}
-                                span.label.label-default.label-pill.pull-xs-right {{schedule.sections.length}}
+                                span.badge {{schedule.sections.length}}
                         br
                         p(ng-hide='hasSchedules') No schedules currently added.
                         h5 Add a new schedule by clicking <a href='/addSchedule/#{school.link}'>here.</a>
@@ -21,9 +21,19 @@ block content
                 br
                 .panel.panel-default(ng-controller='CalendarController')
                     .panel-heading
-                        h2.panel-title Calendar items
+                        h2.panel-title Calendar 
                     .panel-body
-                        h3 Body
+                        .col-md-12.text-center
+                          .btn-group
+                            button.btn.btn-primary(mwl-date-modifier='', date='vm.viewDate', decrement='vm.calendarView')
+                              | Previous
+                            button.btn.btn-default(mwl-date-modifier='', date='vm.viewDate', set-to-today='')
+                              | Today
+                            button.btn.btn-primary(mwl-date-modifier='', date='vm.viewDate', increment='vm.calendarView')
+                              | Next
+                        mwl-calendar(view='calendarView', 
+                            view-date='viewDate', 
+                            events='events')
                 link(href='/bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css', rel='stylesheet')
                 script(src='/bower_components/angular/angular-animate.min.js')
                 script(src='/bower_components/angular/angular-touch.min.js')
@@ -41,12 +51,30 @@ block content
                             console.log($scope.hasSchedules);
                         };  
                         var CalendarController = function($scope) {
-                            
+                            $scope.test = '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                            $scope.test2 = '<i class="fa fa-times" aria-hidden="true"></i>'
+                            $scope.calendarView = 'month';
+                            $scope.viewDate = new Date();
+                            $scope.events = [
+                                {
+                                    title: 'My event title', // The title of the event
+                                    type: 'info', // The type of the event (determines its color). Can be important, warning, info, inverse, success or special
+                                    startsAt: moment().toDate(), // A javascript date object for when the event starts
+                                    endsAt: moment().toDate(), // Optional - a javascript date object for when the event ends
+                                    editable: false, // If edit-event-html is set and this field is explicitly set to false then dont make it editable.
+                                    deletable: false, // If delete-event-html is set and this field is explicitly set to false then dont make it deleteable
+                                    draggable: true, //Allow an event to be dragged and dropped
+                                    resizable: true, //Allow an event to be resizable
+                                    incrementsBadgeTotal: true, //If set to false then will not count towards the badge total amount on the month and year view
+                                    recursOn: 'year', // If set the event will recur on the given period. Valid values are year or month
+                                    cssClass: 'a-css-class-name', //A CSS class (or more, just separate with spaces) that will be added to the event when it is displayed on each view. Useful for marking an event as selected / active etc
+                                    allDay: false // set to true to display the event as an all day event on the day view
+                                }
+                            ];
                         };
                         
                         app.controller('ScheduleController',['$scope',ScheduleController]);
                         app.controller('CalendarController', ['$scope', CalendarController]);
-                        
                     }());
             else
                 .card
