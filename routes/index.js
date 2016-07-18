@@ -7,7 +7,9 @@ module.exports = function(db, passport) {
 
     //  URL: /
     router.get('/', function(req, res, next) {
-        res.render('index', {user: req.user});
+        res.render('index', {
+            user: req.user
+        });
     });
 
     //  Logout Handler
@@ -19,7 +21,9 @@ module.exports = function(db, passport) {
     //  GET Login Page
     router.get('/login', function(req, res) {
         if(req.user) res.redirect('/home');
-        res.render('./user/login', {});
+        res.render('./user/login', {
+            message: req.flash('error')
+        });
     });
 
     //  POST Login Page & Process with Passport
@@ -42,7 +46,7 @@ module.exports = function(db, passport) {
     router.post('/signup',
         passport.authenticate('signup', {
             successRedirect: '/home',
-            failureRedirect: '/',
+            failureRedirect: '/signup',
             failureFlash: true
     }));
 
@@ -107,6 +111,7 @@ module.exports = function(db, passport) {
         var School = require('../schemas/school.js');
         if(!req.user) {
             res.redirect('/');
+            console.log('no user');
             return;
         }
         User.findOne({email: req.user.email}, function(err, user) {
