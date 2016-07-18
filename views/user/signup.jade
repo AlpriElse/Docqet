@@ -2,43 +2,104 @@ extends ../layout
 
 block content
     .container(style='margin-top:50px', ng-app='signup')
-        if message && message.length > 0
-            .alert.alert-danger(role='alert') #{message}
         .panel.panel-default.col-md-4.col-md-offset-4(ng-controller='MainController')
             .panel-body
                 h1.text-xs-center Sign Up
                 br
-                form(action='/signup', method='POST')
+                form(ng-submit='submit();',
+                    novalidate,
+                    name='signupForm')
                     .form-group
-                        input.form-control(ng-model='name', type='text', name='name', placeholder='name')
+                        input.form-control(required, 
+                            ng-model='name', 
+                            ng-model-options="{ updateOn: 'default blur' }",
+                            ng-minlength='5',
+                            ng-maxlength='20',
+                            type='text', 
+                            name='name', 
+                            placeholder='name')
+                        div(ng-show='signupForm.$submitted || signupForm.name.$touched', 
+                            ng-messages='signupForm.name.$error',
+                            class='help-block')
+                            p(ng-message='maxlength', class='help-block') Name too long.
+                            p(ng-message='minlength') Name too short.
+                            p(ng-message='required') Your name is required.
                     .form-group
-                        input.form-control(ng-model='email',ng-blur='checkEmail()', type='email', name='email', placeholder='email')
+                        input.form-control(required, 
+                            dq-unique-email, 
+                            ng-model='email', 
+                            ng-model-options="{ updateOn: 'default blur' }",
+                            ng-pattern='emailPattern',
+                            type='email', 
+                            name='email', 
+                            placeholder='email')
+                        div(ng-show='signupForm.$submitted || signupForm.email.$touched', 
+                            ng-messages='signupForm.email.$error',
+                            class='help-block')
+                            p(ng-message='unique') Email is already registered.
+                            p(ng-message='email') Invalid email.
+                            p(ng-message='required') Your email is required.
                     .form-group
-                        input.form-control(ng-model='password',type='password', name='password', placeholder='password')
+                        input.form-control(required, 
+                            ng-model='password',
+                            ng-model-options="{ updateOn: 'default blur' }",
+                            ng-minlength='8',
+                            type='password', 
+                            name='password', 
+                            placeholder='password')
+                        div(ng-show='signupForm.$submitted || signupForm.password.$touched', 
+                            ng-messages='signupForm.email.$error',
+                            class='help-block')
+                            p(ng-message='minlength') Password must be at least 8 characters long.
+                            p(ng-message='required') A password is required.
                     .form-group
-                        input.form-control(ng-model='betaKey',type='text', name='beta key', placeholder='beta key')
+                        input.form-control(required, 
+                            ng-model='betaKey',
+                            type='text', 
+                            name='betakey', 
+                            placeholder='betakey') 
+                        div(ng-show='signupForm.$submitted || signupForm.betakey.$touched',
+                            ng-messages='signupForm.betakey.$error')
+                            p(ng-message='unique') Betakey has already been claimed.
+                            p(ng-message='valid') Invalid betakey.
                     
-                    
-                    button.btn.btn-block.btn-primary(type='submit') Submit
+                    button.btn.btn-block.btn-primary(ng-disabled='signupForm.$invalid',type='submit') Submit
+    style.
+        input.ng-dirty.ng-valid { border:1px solid Green; }
+        input.ng-dirty.ng-invalid { border:1px solid Red; }
+        input.ng-dirty.ng-valid ~ span.ok { color:green; display:inline; }
+        input.ng-dirty.ng-invalid ~ span.ko { color:red; display:inline; }
+    script(src='/bower_components/angular/angular-messages.min.js')    
     script.
         (function() {
-            var app = angular.module('signup', []);
+            var app = angular.module('signup', ['ngMessages']);
             
             app.controller('MainController', ['$scope','$http', function($scope, $http) {
                 $scope.submit = function() {
-                    $scope.submitted = true;
-                    $http.post(url, {
-                        
-                    });
+                    console.log('submitted');
                 }
-                $scope.checkEmail = function() {
-                    console.log('called');
-                    var url = '/operations/checkEmail/' + $scope.email;
-                    var isTaken = $http.get(url).then(function(res) {
-                        console.log(res);
-                    }, function(res) {
-                        console.log(res);
-                    });
+                $scope.emailFormat = '/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/';
+            }]);
+            
+            app.directive('dqUniqueEmail', ['$http', function($http) {
+                return {
+                    restrict: 'A',
+                    require: 'ngModel',
+                    link: function(scope, elm, attrs, ctrl) {
+                        elm.on('blur', function(){
+                            scope.$apply(function() {
+                                $http({
+                                    method: 'POST',
+                                    url: '/backendServices/checkEmail',
+                                    data: {
+                                        email: elm.val()
+                                    }
+                                }).success(function(data, status, headers, config) {
+                                    ctrl.$setValidity('unique', data);
+                                });
+                            });
+                        });
+                    }
                 }
             }]);
         }());
