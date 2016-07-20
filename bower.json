@@ -4,7 +4,7 @@
   "main": "",
   "authors": [
     "Alpri Else <alprielse@gmail.com>"
-],
+  ],
   "homepage": "https://github.com/AlpriElse/Docqet",
   "private": true,
   "ignore": [
@@ -15,15 +15,21 @@
     "tests"
   ],
   "dependencies": {
+    "angular-bootstrap": "1.*",
     "angular-bootstrap-calendar": "^0.21.5",
     "animate.css": "^3.5.2",
     "bootstrap-timepicker": "^0.5.2",
     "bootstrap": "3.*",
+    "components-font-awesome": "4.*",
+    "jquery": "3.1.*",
     "list.js": "^1.2.0",
     "moment-range": "^2.2.0",
     "moment-recur": "^1.0.5",
     "moment": "^2.14.1",
     "tether": "^1.3.2",
     "underscore": "^1.8.3"
+  },
+  "resolutions": {
+    "jquery": "1.9.1 - 2"
   }
 }

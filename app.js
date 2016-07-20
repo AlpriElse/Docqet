@@ -10,7 +10,7 @@ module.exports = function(db, passport) {
 
     //  Initialize App
     var app = express();
-    app.use('/static', express.static(__dirname + '/public'));
+    app.use(express.static('public'));
 
     //  Configuring Passport
     var session = require('express-session');
@@ -52,8 +52,6 @@ module.exports = function(db, passport) {
 
     //  Pass to Routers
     app.use('/users', users);
-    app.use('/static', express.static('public'));
-    app.use('/bower_components', express.static(__dirname + '/bower_components'));
     app.use('/backendServices', backendServices(db, passport));
     app.use('/', routes(db, passport));
 
