@@ -2,14 +2,14 @@ module.exports = function(db, passport) {
     var express = require('express');
     var router = express.Router(mergeParams=true);
     var flash = require('connect-flash');
+    var path = require('path');
 
     var LocalStrategy = require('passport-local').Strategy;
 
     //  URL: /
-    router.get('/', function(req, res, next) {
-        res.render('index', {
-            user: req.user
-        });
+
+    router.get('/',function(req, res) {
+        res.sendFile(path.join(__dirname ,'../public','index.html'));
     });
 
     //  Logout Handler
@@ -18,37 +18,49 @@ module.exports = function(db, passport) {
         res.redirect('/');
     });
 
-    //  GET Login Page
-    router.get('/login', function(req, res) {
-        if(req.user) res.redirect('/home');
-        res.render('./user/login', {
-            message: req.flash('error')
-        });
-    });
-
     //  POST Login Page & Process with Passport
     var login = require('../passport/login.js')(passport);
-    router.post('/login',
+    /*router.post('/login',
         passport.authenticate('login', {
             successRedirect:'/home',
             failureRedirect:'/',
             failureFlash: true
-    }));
-
-    //  GET Signup page
-    router.get('/signup', function(req, res) {
-        if(req.user) res.redirect('/home');
-        res.render('./user/signup',{});
+    }));*/
+    router.post('/login', function(req,res,next) {
+        passport.authenticate('login', function(err, user, info) {
+            if(err) {
+                return next(err);
+            }
+            if(!user) {
+                return res.send({success: false});
+            }
+            req.login(user,loginErr => {
+                if(loginErr) {
+                    return next(loginErr);
+                }
+                return res.send({success: true});
+            });
+        })(req,res,next);
     });
 
     //  POST Signup page & Process with Passport
     var signup = require('../passport/signup.js')(passport);
-    router.post('/signup',
-        passport.authenticate('signup', {
-            successRedirect: '/home',
-            failureRedirect: '/signup',
-            failureFlash: true
-    }));
+    router.post('/signup', function(req,res,next) {
+        passport.authenticate('signup', function(err, newUser, info) {
+            if(err) {
+                return next(err);
+            }
+            if(!newUser) {
+                return res.send({success: false});
+            }
+            req.login(newUser,loginErr => {
+                if(loginErr) {
+                    return next(loginErr);
+                }
+                return res.send({success: true});
+            });
+        })(req,res,next);
+    });
 
     //  GET Create School Page
     router.get('/createSchool', function(req, res) {
