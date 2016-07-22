@@ -8,5 +8,6 @@ module.exports = mongoose.model('School',{
     calendar: {type: Array, default: []},
     eventList: {type: Array, default: []},
     schedules: {type: Array, default: []},
-    changeLog: {type: Array, default: []}
+    changeLog: {type: Array, default: []},
+    tokens: {type: Array, default: []}
 });

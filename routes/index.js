@@ -93,6 +93,14 @@ module.exports = function(db, passport) {
                             newSchool.name = req.body['schoolName'];
                             newSchool.link = req.body['schoolLink'];
                             newSchool.admin = req.user._id;
+                            var tokens = newSchool.name.toLowerCase().split(" ");
+                            var completeTokens = [];
+                            for (var i = 0; i < tokens.length; i++) {
+                                for (var q = 0; q <= i; q++) {
+                                    completeTokens.push(tokens.slice(q, tokens.length - i + q).join(" "));
+                                }
+                            }
+                            newSchool.tokens = completeTokens;
 
                             newSchool.save(function(err) {
                                 if(err) {

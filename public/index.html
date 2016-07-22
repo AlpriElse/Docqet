@@ -14,13 +14,15 @@
 <script src='/javascripts/angular/angular-messages.min.js'></script>
 <script src='/javascripts/dq-login.js'></script>
 <script src='/javascripts/dq-signup.js'></script>
+<script src='/javascripts/dq-search.js'></script>
 <script type='text/javascript'>
     (function() {
-        var app = angular.module('docqet', ['ngRoute','dqSignup', 'dqLogin']);
+        var app = angular.module('docqet', ['ngRoute', 'dqSearch','dqSignup', 'dqLogin']);
         app.config(['$routeProvider', function($routeProvider, $locationProvider){
             $routeProvider
                 .when('/', {
                     templateUrl: '/views/landing.html',
+                    controller: 'SearchController'
 
                 })
                 .when('/login', {
