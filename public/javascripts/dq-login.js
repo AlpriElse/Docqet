@@ -11,9 +11,10 @@
                 if(res.data.success) {
                     $window.location = '/home';
                 } else {
+                    console.log(res.data);
                     //  Unknown Email yet to be implemented
                     $scope.badLogin = true;
-                    $scope.invalidLogin = true;
+                    $scope.loginStatus.invalidLogin = true;
                 }
             });
         }
