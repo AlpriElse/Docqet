@@ -20,6 +20,18 @@ module.exports = function(db, passport) {
     router.post('/checkSchoolName', function(req,res) {
         res.send('not implemented yet.');
     });
+    
+    router.post('/findSchool', function(req, res) {
+        var School = require('../schemas/school.js');
+        School.find({tokens: new RegExp('^' + req.body.schoolSearch, "i")}, function(err, schools) {
+           if (err) {
+               console.log(err);
+               done(err);
+           } else {
+            res.send(schools);
+           }
+        });
+    });
 
     return router;
 }
