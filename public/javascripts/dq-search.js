@@ -12,7 +12,7 @@
                }
             });
         }
-        
+        //Lulz Alfri u a scrub
         
     }]);
 }());
