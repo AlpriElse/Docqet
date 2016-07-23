@@ -1,18 +1,16 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h1 class="panel-title">Find Your School!</h1>
-    </div>
-    <div class="panel-body" ng-controller="SearchController">
-        <form>
-            <div class="input-group">
-                <input ng-keyup="updateQuery()"  ng-model="schoolSearch" type="text" class="form-control"/>
-                <div class="input-group-addon"><i aria-hidden="true" class="fa fa-search"></i></div>
-            </div>
-        </form>
-        <ul>
-            <li ng-repeat="school in schools">
-                {{school.name}}
-            </li>
-        </ul>
-    </div>
+<div ng-controller="SearchController as sc">
+    <md-autocomplete
+        md-no-cache="true"
+          md-selected-item="sc.selectedItem"
+          md-search-text="sc.searchText"
+          md-items="item in schools"
+          md-item-text="item.name"
+          md-min-length="0"
+          placeholder="Enter you school name here"
+            ng-keyup="sc.updateQuery(sc.searchText)">
+        <md-item-template>
+            <span md-highlight-text="sc.searchText" md-highlight-flags="^i">{{item.name}}</span>
+        </md-item-template>
+    </md-autocomplete>
+    
 </div>
