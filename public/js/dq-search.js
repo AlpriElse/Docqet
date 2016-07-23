@@ -15,7 +15,7 @@
                    }
                 });
             } else {
-                $scope.schools = [];
+                $scope.schools = []; 
             }
         }        
     }]);
